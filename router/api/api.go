@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"go-admin/app/api/v1/devops/release"
+	"go-admin/app/service/manage"
 )
 
 func InitRouter(r *gin.Engine)  {
@@ -17,4 +18,16 @@ func InitRouter(r *gin.Engine)  {
 			devops.GET("/git/branch", release.Branch)
 		}
 	}
+
+	//admin对应的一些模板页面
+	r.LoadHTMLGlob("public/html/**/*")
+	admin := r.Group("/devops")
+	{
+		devops := admin.Group("/release")
+		{
+			devops.GET("/index", manage.ReleaseList)
+			devops.GET("/add", manage.ReleaseAdd)
+		}
+	}
+
 }

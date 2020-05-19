@@ -16,6 +16,10 @@ type ReleaseService struct {
 	Db gdb.DB
 }
 
+const (
+	PERPAGE = 20
+)
+
 func NewReleaseService() *ReleaseService {
 	return &ReleaseService{Db:g.DB()}
 }
@@ -146,30 +150,50 @@ func (r *ReleaseService) Info(release_id int) (g.Map, error) {
 }
 
 //列表
-func (r *ReleaseService) List(release_id int, author string) (g.List, error) {
+func (r *ReleaseService) List(release_id int, author string, page int) (g.Map, error) {
 
-	var list g.List
+	res := make(g.Map)
+	//对page页面做处理
+	if g.IsEmpty(page) {
+		page = 1
+	}
+
 	//解析参数
 	mod := r.Db.Table("devops_release")
 	if !g.IsEmpty(release_id) {
 		mod = mod.Where("id = ?", release_id)
 	}
 	if !g.IsEmpty(author) {
-		mod = mod.Where("author like", "%"+ author +"%")
+		mod = mod.Where("author like ?", "%"+ author +"%")
+	}
+
+	//查询总页数
+	total_num, err := mod.Count()
+	if err != nil {
+		return res, err
+	}
+
+	//处理分页
+	if g.IsEmpty(page) {
+		min_limit := (page -1)*PERPAGE
+		max_limit := page*PERPAGE
+		mod.Limit( min_limit, max_limit)
 	}
 	resp, err := mod.All()
-
 	if err != nil {
-		return list, err
+		return res, err
 	}
 
 	//是否需要对数据解析
-	list = resp.List()
+	list := resp.List()
 	for _, data := range list {
 		data["status"] = devops.StatusList()[gconv.Int(data["status"])]
 	}
+	res["total"] = total_num
+	res["list"] = list
+	res["page"] = page
 
-	return list, nil
+	return res, nil
 }
 
 

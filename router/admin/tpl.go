@@ -11,6 +11,7 @@ func InitRouter(eng *engine.Engine) {
 	eng.HTML("GET", "/admin/table", pages.GetTableContent)
 
 
+
 	//添加工单
 	eng.HTMLFile("GET", "/admin/devops/release/add", "./public/html/release/add.tpl", map[string]interface{}{
 		"msg": "Hello world",

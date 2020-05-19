@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        .el-table .warning-row {
+            background: oldlace;
+        }
+
+        .el-table .success-row {
+            background: #f0f9eb;
+        }
+
+        .el-col {
+            border-radius: 4px;
+        }
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+        }
+        .row-bg {
+            padding: 10px 0;
+            background-color: #f9fafc;
+        }
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <el-container>
+
+        <!-- 页面头部显示 -->
+        <el-header height="30px;">
+            <el-row>
+                <el-col :span="24">
+                    <div class="grid-content bg-purple-light">
+                        <span>
+                            工单> <small>工单列表</small>
+                        </span>
+                    </div>
+                </el-col>
+            </el-row>
+
+        </el-header>
+
+        <!-- 页面主体显示 -->
+        <el-main>
+            <!-- 搜索相关 -->
+            <el-row :gutter="24">
+                <el-col :span="4">
+                    <div class="grid-content bg-purple">
+                        <el-input v-model="id" placeholder="请输入工单Id"></el-input>
+                    </div>
+                </el-col>
+
+                <el-col :span="4">
+                    <div class="grid-content bg-purple">
+                        <el-input v-model="author" placeholder="请输入提交人"></el-input>
+                    </div>
+                </el-col>
+                <el-col :span="14">
+                    <div class="grid-content bg-purple">
+                        <el-button  type="primary" @click="searchRelease(id, author)">搜索</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="2">
+                    <div class="grid-content bg-purple">
+                        <el-button justify="end"  type="success" @click="addRelease()">添加工单</el-button>
+                    </div>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24"><div class="grid-content bg-purple-dark"></div></el-col>
+            </el-row>
+            <!-- 表格 -->
+            <template>
+                <el-table :data="tableData" border style="width: 100%" :row-class-name="tableRowClassName">
+                    <el-table-column prop="id" label="工单Id" width="180"></el-table-column>
+                    <el-table-column prop="title" label="工单名" width="180"></el-table-column>
+                    <el-table-column prop="author" label="提交者"></el-table-column>
+                    <el-table-column prop="status" label="状态"></el-table-column>
+                    <el-table-column prop="content" label="描述"></el-table-column>
+                    <el-table-column prop="created_at" label="添加时间"></el-table-column>
+                    <el-table-column prop="updated_at" label="修改时间"></el-table-column>
+                    <el-table-column fixed="right" label="操作" width="100">
+                        <template slot-scope="scope">
+                            <el-button @click="infoRelease(scope.row)" type="text" size="small">查看</el-button>
+                            <el-button @click="editRelease(scope.row)" type="text" size="small">编辑</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </template>
+
+        </el-main>
+
+        <!-- 页面底部分页相关 -->
+        <el-footer>
+            <el-row type="flex" class="row-bg" justify="end">
+                <el-pagination @current-change="currentChange"  background layout="prev, pager, next" :page-size="20" :total="total"></el-pagination>
+            </el-row>
+            <!-- 分页 -->
+        </el-footer>
+    </el-container>
+
+
+
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+
+    const hostname = "http://localhost:8089";
+    //vue基础数据
+    var vue_data = {
+        id : "",
+        author : "",
+        page : 1,
+        tableData: [],
+        total:100
+    };
+    var vue = new Vue({
+        el: '#app',
+        methods: {
+            //处理样式问题
+            tableRowClassName({row, rowIndex}) {
+                if (rowIndex === 0) {
+                    return 'warning-row';
+                } else if (rowIndex === 1) {
+                    return 'success-row';
+                }
+                return '';
+            },
+            infoRelease(row) {
+                console.log(row.id);
+            },
+            editRelease(row) {
+                console.log(row.id)
+            },
+            //添加工单
+            addRelease() {
+                window.location.href = hostname + "/devops/release/add";
+            },
+            // 搜索数据
+            searchRelease(id, author){
+                getlist(id, author, 1);
+            },
+
+            // 当前页操作
+            currentChange(page){
+                console.log(this.id, this.author, page)
+            }
+        },
+        data: function() {
+            return vue_data;
+        },
+        mounted: function () {
+            getlist(this.id, this.author, this.page);
+        }
+    });
+    
+    function getlist(id, author, page) {
+        axios({
+            method : "get",
+            url : hostname + "/v1/devops/release/list",
+            params :{id:id, author:author, page:page}
+        }).then(function (data) {
+            if (data.data.status){
+                api_data = data.data.data;
+                vue_data.tableData = api_data.list;
+                vue_data.total = api_data.total;
+            }
+        }).catch(function (error) {
+           //执行一些弹框
+        });
+    }
+</script>
+</html>
