@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<link rel="stylesheet" href="../css/element-ui.css">
+	<script src="../js/vue.js"></script>
+	<script src="../js/element-ui.js"></script>
+	<style>
+		.fields-group{
+			margin:10px 0;border: 1px dashed lightgrey;border-radius: 10px;padding: 5px 10px;
+		}
+	</style>
+</head>
+<body>
+<div id="app">
+	<el-col :offset="8">
+		<el-form ref="form" :model="form" label-width="80px">
+			<el-row>
+				<el-col :span="col">
+					<el-form-item label="标题">
+						<el-input v-model="form.title"></el-input>
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="col">
+					<el-form-item label="提交者">
+						<el-input v-model="form.name"></el-input>
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="col">
+					<el-form-item label="sql语句">
+						<el-button @click="add('sqls',{databaseName:'',desc:'',sql:''})">添加</el-button>
+						<div v-for="(sql,ind) in form.sqls" :key="ind" class="fields-group">
+							<el-row>
+								<el-col :span="10">
+									<el-select v-model="sql.database" placeholder="请选择库名">
+										<el-option label="请选择库名" value="''"></el-option>
+										<el-option :label="db.label" :value="db.value" v-for="db in databases"></el-option>
+									</el-select>
+								</el-col>
+								<el-col :span="10" style="padding: 0 10px;margin-bottom:10px; ">
+									<el-input type="text" v-model="sql.desc" placeholder="请输入描述"></el-input>
+								</el-col>
+								<el-col :span="2">
+									<el-button @click="del('sqls',ind)">删除</el-button>
+								</el-col>
+							</el-row>
+							<el-row>
+								<el-col>
+									<el-input type="textarea" v-model="sql.sql" :row="6" :placeholder="`请输入sql语句${ind}`"></el-input>
+								</el-col>
+							</el-row>
+						</div>
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="col">
+					<el-form-item label="package">
+						<el-button @click="add('packages',{package:'',branch:'',desc:'',})">添加</el-button>
+						<div v-for="(package,ind) in form.packages" :key="ind" class="fields-group">
+							<el-row :gutter="10" style="margin-top: 10px;margin-bottom: 10px;">
+								<el-col :span="10">
+									<el-select v-model="package.package" placeholder="请选择包名">
+										<el-option label="请选择包名" value="''"></el-option>
+										<el-option :label="item.label" :value="item.label" v-for="item in packages"></el-option>
+									</el-select>
+								</el-col>
+								<el-col :span="10">
+									<el-select v-model="package.branch" placeholder="请选择分支">
+										<el-option label="请选择分支" value="''"></el-option>
+										<el-option :label="item.label" :value="item.value" v-for="item in branches"></el-option>
+									</el-select>
+								</el-col>
+								<el-col :span="2">
+									<el-button @click="del('packages',ind)">删除</el-button>
+								</el-col>
+							</el-row>
+						</div>
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="col">
+					<el-form-item label="service">
+						<el-button @click="add('services',{service:'',branch:'',json:''})">添加</el-button>
+						<div v-for="service in form.services" class="fields-group">
+							<el-row :gutter="10" style="margin-top: 10px;margin-bottom: 10px;">
+								<el-col :span="10">
+									<el-select v-model="service.service" placeholder="请选择服务器名">
+										<el-option label="请选择服务器名" value="''"></el-option>
+										<el-option :label="item.label" :value="item.value" v-for="item in services"></el-option>
+									</el-select>
+								</el-col>
+								<el-col :span="10">
+									<el-select v-model="service.branch" placeholder="请选择分支名">
+										<el-option label="请选择分支" value="''"></el-option>
+										<el-option :label="item.label" :value="item.value" v-for="item in branches"></el-option>
+									</el-select>
+								</el-col>
+								<el-col :span="2">
+									<el-button @click="del('services',ind)">删除</el-button>
+								</el-col>
+
+							</el-row>
+							<el-row>
+								<el-col>
+									<el-input type="textarea" :rows="6" v-model="service.json" placeholder="请输入JSON格式语句"></el-input>
+								</el-col>
+							</el-row>
+						</div>
+
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="2" :offset="3" >
+					<el-button @click="submit">提交(打印)</el-button>
+				</el-col>
+
+			</el-row>
+		</el-form>
+	</el-col>
+
+</div>
+
+<script>
+	var app=new Vue(
+			{
+				el: '#app',
+				data() {
+					return {
+						form: {
+							title: '',
+							name:'',
+							sqls:[{database:'',desc:'',sql:''}],
+							packages:[{package:'',branch:'',desc:'',}],
+							services:[{service:'',branch:'',json:''}],
+						},
+						col:8,
+						/**
+						 * 数据库筛选源 可以从接口获取后赋值给该字段
+						 */
+						databases:[
+							{label:'数据库1',value:1},
+							{label:'数据库2',value:2},
+							{label:'数据库3',value:3},
+							{label:'数据库4',value:4},
+							{label:'数据库5',value:5},
+							{label:'数据库6',value:6},
+						],
+						/**
+						 * 包名筛选 可以从接口获取后复制给该字段
+						 */
+						packages:[
+							{label:'包名1',value:1},
+							{label:'包名2',value:2},
+							{label:'包名3',value:3},
+							{label:'包名4',value:4},
+							{label:'包名5',value:5},
+							{label:'包名6',value:6},
+						],
+						/**
+						 * 分支名 可以从接口获取后赋值给该字段
+						 */
+						branches:[
+							{label:'分支1',value:1},
+							{label:'分支2',value:2},
+							{label:'分支3',value:3},
+							{label:'分支4',value:4},
+							{label:'分支5',value:5},
+							{label:'分支6',value:6},
+						],
+						/**
+						 * 服务器名 可以从接口获取后赋值给该字段
+						 */
+						services:[
+							{label:'服务器1',value:1},
+							{label:'服务器2',value:2},
+							{label:'服务器3',value:3},
+							{label:'服务器4',value:4},
+							{label:'服务器5',value:5},
+							{label:'服务器6',value:6},
+						]
+					}
+				},
+				methods:{
+					del(type,ind){
+						this.form[type].splice(ind,1);
+						console.info(this.form);
+					},
+					add(type,item){
+						this.form[type].push(item);
+						console.info(this.form);
+					},
+					submit(){
+						console.info("收集的信息是：",this.form);
+					}
+				}
+			}
+	);
+</script>
+</body>
+</html>
+
+
+
