@@ -1,0 +1,59 @@
+{
+  "id": 1,
+  "content": "对应工单的名字",
+  "author": "admin（谁提交）",
+  "sql": [
+    {
+      "db": "数据库名",
+      "crud": "对应的sql执行语句",
+      "remark": "这条语句是为了解决什么问题"
+    },
+    {
+      "db": "数据库名",
+      "crud": "对应的sql执行语句",
+      "remark": "这条语句是为了解决什么问题"
+    }
+  ],
+  "package": [
+    {
+      "package_name": "包名",
+      "branch_name": "分支名"
+    },
+    {
+      "package_name": "包名",
+      "branch_name": "分支名"
+    },
+    {
+      "package_name": "包名",
+      "branch_name": "分支名"
+    }
+  ],
+  "service": [
+    {
+      "service_name": "服务名",
+      "branch_name": "分支名",
+      "env": [
+        {
+          "handle": "add(对应的相关操作，增加，删除，修改)",
+          "key": "例如：TASK_CRON_SWITCH",
+          "value": "例如：off"
+        },
+        {
+          "handle": "add(对应的相关操作，增加，删除delete，修改update)",
+          "key": "",
+          "value": ""
+        }
+      ],
+      "script": [
+        {
+          "cmd": "对应的脚本执行命令",
+          "remark": "一般都是一次性的命令"
+        },
+        {
+          "cmd": "对应的脚本执行命令",
+          "remark": "一般都是一次性的命令"
+        }
+      ]
+    }
+  ]
+}
