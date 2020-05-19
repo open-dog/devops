@@ -118,6 +118,13 @@
 				</el-col>
 			</el-row>
 			<el-row>
+				<el-col :span="col">
+					<el-form-item label="描述">
+						<el-input type="textarea" :rows="6" v-model="form.desc" placeholder="请输入描述"></el-input>
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row>
 				<el-col :span="2" :offset="3" >
 					<el-button @click="submit">提交(打印)</el-button>
 				</el-col>
@@ -141,7 +148,8 @@
 							packages:[{package:'',branch:'',desc:'',}],
 							services:[{service:'',branch:'',json:''}],
 						},
-						col:8,
+						col:8,//表格列跨的span数
+						desc:'',// 描述
 						/**
 						 * 数据库筛选源 可以从接口获取后赋值给该字段
 						 */
