@@ -120,15 +120,8 @@
 <script>
 
     const hostname = "http://localhost:8089";
-    //vue基础数据
-    var vue_data = {
-        id : "",
-        author : "",
-        page : 1,
-        tableData: [],
-        total:100
-    };
-    var vue = new Vue({
+
+    var vm = new Vue({
         el: '#app',
         methods: {
             //处理样式问题
@@ -161,13 +154,19 @@
             }
         },
         data: function() {
-            return vue_data;
+            return {
+                id : "",
+                author : "",
+                page : 1,
+                tableData: [],
+                total:100
+            };
         },
         mounted: function () {
             getlist(this.id, this.author, this.page);
         }
     });
-    
+
     function getlist(id, author, page) {
         axios({
             method : "get",
@@ -175,9 +174,9 @@
             params :{id:id, author:author, page:page}
         }).then(function (data) {
             if (data.data.status){
-                api_data = data.data.data;
-                vue_data.tableData = api_data.list;
-                vue_data.total = api_data.total;
+                let api_data = data.data.data;
+                vm.tableData = api_data.list;
+                vm.total = api_data.total;
             }
         }).catch(function (error) {
            //执行一些弹框
