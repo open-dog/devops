@@ -196,4 +196,14 @@ func (r *ReleaseService) List(release_id int, author string, page int) (g.Map, e
 	return res, nil
 }
 
+//返回一些通用信息
+func (r *ReleaseService) CommonInfo() (g.Map, error){
+	res := make(g.Map)
+
+	//数据库名
+
+	return res, nil
+
+}
+
 
