@@ -333,11 +333,11 @@
 							{label:'服务器6',value:6},
 						],
 						name:name,
-						release_id:release_id||18,
+						release_id:release_id,
 					}
 				},
 				created: function(){
-					if(this.release_id!=''){
+					if(this.release_id!=''&&this.release_id!=null){
 						this.getInfo();
 					}
 					this.getCommon();
