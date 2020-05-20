@@ -196,6 +196,70 @@ func (r *ReleaseService) List(release_id int, author string, page int) (g.Map, e
 	return res, nil
 }
 
+func (r *ReleaseService) Edit(data *releasestruct.EditReleaseParam) (error) {
+
+	//开启事务
+	if tx, err := r.Db.Begin(); err == nil {
+		//写入主干数据
+		_, err := tx.Table("devops_release").Data(g.Map{
+			"title":data.Title,
+			"author":data.Author,
+			"content":"",
+			"updated_at" : gtime.Datetime(),
+		}).Where("id", data.Id).Update()
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		//修改sql表
+		for _, s := range *data.Sql {
+
+			_, err = tx.Table("devops_sql").Data(g.Map{
+				"db" : s.Db,
+				"crud" : s.Crud,
+				"remark" : s.Remark,
+				"updated_at" : gtime.Datetime(),
+			}).Where("id", s.Id).Update()
+		}
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		//修改package
+		for _, p := range *data.Package {
+			_, err = tx.Table("devops_package").Data(g.Map{
+				"name" : p.Name,
+				"branch" : p.Branch,
+				"updated_at" : gtime.Datetime(),
+			}).Where("id", p.Id).Update()
+		}
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		//写入service
+		for _, s := range *data.Service {
+			_, err = tx.Table("devops_service").Data(g.Map{
+				"name" : s.Name,
+				"branch" : s.Branch,
+				"env" : gconv.String(s.Env),
+				"script" : gconv.String(s.Script),
+				"updated_at" : gtime.Datetime(),
+			}).Where("id", s.Id).Update()
+		}
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		tx.Commit()
+	}
+	return nil
+
+}
+
 //返回一些通用信息
 func (r *ReleaseService) CommonInfo() (g.Map, error){
 	res := make(g.Map)
