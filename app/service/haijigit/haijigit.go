@@ -6,7 +6,6 @@ import (
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/util/gconv"
 	"go-admin/app/helper"
-	"log"
 	"strings"
 )
 
@@ -73,8 +72,8 @@ func GetPackageAddress(package_name string) string {
 	return ""
 }
 
-func GetBranchNameByName(name string) ([]string, error) {
-	var branch_list []string
+func GetBranchNameByName(name string) (g.List, error) {
+	branch_list := make(g.List, 0)
 	code_address := GetServerAddress(name)
 	if code_address == "" {
 		code_address = GetPackageAddress(name)
@@ -87,14 +86,13 @@ func GetBranchNameByName(name string) ([]string, error) {
 	cmd := "cd ./code/" + name +" && git branch -r"
 	out, err := helper.Cmd(cmd, true)
 	if err != nil {
-		log.Fatal(err)
+		return branch_list, err
 	}
-	fmt.Println(string(out))
 	list_arr := strings.Split(string(out), "\n")
 
 	for _, item := range list_arr {
 		if item != "" && !strings.Contains(item, "HEAD") {
-			branch_list = append(branch_list, strings.TrimSpace(item))
+			branch_list = append(branch_list, g.Map{"label":strings.TrimSpace(item), "value":strings.TrimSpace(item)})
 		}
 	}
 

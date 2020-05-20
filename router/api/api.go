@@ -16,6 +16,7 @@ func InitRouter(r *gin.Engine)  {
 			devops.GET("/release/list", release.ListRelease)
 			devops.POST("/release/edit", release.EditRelease)
 			devops.GET("/git/branch", release.Branch)
+			devops.GET("/release/common", release.GetCommon)
 		}
 	}
 

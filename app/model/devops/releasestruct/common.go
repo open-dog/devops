@@ -1,5 +1,9 @@
 package releasestruct
 
+type EditReleaseParam struct {
+	AddReleaseParam
+	Id int `json:"id" form:"id"`
+}
 
 //添加工单的请求参数
 type AddReleaseParam struct {
@@ -7,14 +11,15 @@ type AddReleaseParam struct {
 	Author  string     `json:"author" form:"title"` //解析对应的提交者名
 	Sql     *[]Sql     `json:"sql"`                 //解析对应需要执行的sql语句
 	Package *[]Package `json:"package"`             //解析对应的包名
-	Service *[]Service  `json:"service"`             //解析对应脚本名
+	Service *[]Service `json:"service"`             //解析对应脚本名
 
 }
 
 type Service struct {
-	Name   string `json:"name"`
-	Branch string `json:"branch"`
-	Env []*Env `json:"env"`
+	Id     int       `json:"id"`
+	Name   string    `json:"name"`
+	Branch string    `json:"branch"`
+	Env    []*Env    `json:"env"`
 	Script []*Script `json:"script"`
 }
 
@@ -31,11 +36,13 @@ type Script struct {
 }
 
 type Package struct {
+	Id     int    `json:"id"`
 	Name   string `json:"name"`
 	Branch string `json:"branch"`
 }
 
 type Sql struct {
+	Id     int    `json:"id"`
 	Db     string `json:"db"`
 	Crud   string `json:"crud"`
 	Remark string `json:"remark"`
