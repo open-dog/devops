@@ -39,6 +39,7 @@
 			background: rgba(0,0,0,0.1);
 			font-weight: 700;
 			position: relative;
+			display: none!important;
 		}
 		.el-select-group__title::after{
 			content: '（包下分支列表）';
@@ -96,7 +97,7 @@
 								<div v-for="(item,ind) in form.sql" :key="ind" class="fields-group">
 									<el-row>
 										<el-col :span="10">
-											<el-select v-model="item.db" filterable multiple clearable placeholder="请选择库名">
+											<el-select v-model="item.db" filterable  clearable placeholder="请选择库名">
 												<el-option label="请选择库名" value="''"></el-option>
 												<el-option :label="db.label" :value="db.value" v-for="db in databases"></el-option>
 											</el-select>
@@ -126,13 +127,13 @@
 								<div v-for="(item,ind) in form.package" :key="ind" class="fields-group">
 									<el-row :gutter="10" style="margin-top: 10px;margin-bottom: 10px;">
 										<el-col :span="10">
-											<el-select v-model="item.name" filterable multiple clearable placeholder="请选择包名" @change="selectChange(item.name,`package_${ind}`)">
+											<el-select v-model="item.name" filterable  clearable placeholder="请选择包名" @change="selectChange(item.name,`package_${ind}`)">
 												<el-option label="请选择包名" value="''"></el-option>
 												<el-option :label="option.label" :value="option.value" v-for="option in packages"></el-option>
 											</el-select>
 										</el-col>
 										<el-col :span="12">
-											<el-select v-model="item.branch" filterable multiple clearable placeholder="请选择分支" @visible-change="visibleChange(`package_${ind}`)">
+											<el-select v-model="item.branch" filterable  clearable placeholder="请选择分支" @visible-change="visibleChange(`package_${ind}`)">
 												<el-option label="请选择分支" value="''"></el-option>
 												<el-option-group v-if="branches[`package_${ind}`]"
 														v-for="(group,prop) in branches[`package_${ind}`]"
@@ -171,13 +172,13 @@
 								<div v-for="(item,ind) in form.service" class="fields-group">
 									<el-row :gutter="10" style="margin-top: 10px;margin-bottom: 10px;">
 										<el-col :span="10">
-											<el-select v-model="item.name" filterable multiple clearable placeholder="请选择服务器名" @change="selectChange(item.name,`service_${ind}`)">
+											<el-select v-model="item.name" filterable  clearable placeholder="请选择服务器名" @change="selectChange(item.name,`service_${ind}`)">
 												<el-option label="请选择服务器名" value="''"></el-option>
 												<el-option :label="option.label" :value="option.value" v-for="option in services"></el-option>
 											</el-select>
 										</el-col>
 										<el-col :span="12">
-											<el-select v-model="item.branch" filterable multiple clearable placeholder="请选择分支名" @visible-change="visibleChange(`service_${ind}`)">
+											<el-select v-model="item.branch" filterable  clearable placeholder="请选择分支名" @visible-change="visibleChange(`service_${ind}`)">
 												<el-option label="请选择分支" value="''"></el-option>
 												<el-option-group
 														v-for="(group,prop) in branches[`service_${ind}`]"
@@ -206,10 +207,10 @@
 													</el-row>
 													<el-row v-for="(item2,index) in item.env" :gutter="10" style="margin-top:10px;margin-bottom: 10px;margin-left: 10px; ">
 														<el-col :span="6">
-															<el-input v-model="item2.key" filterable multiple clearable placeholder="请输入Key值"></el-input>
+															<el-input v-model="item2.key" filterable  clearable placeholder="请输入Key值"></el-input>
 														</el-col>
 														<el-col :span="6">
-															<el-input v-model="item2.value" filterable multiple clearable placeholder="请输入Value值"></el-input>
+															<el-input v-model="item2.value" filterable  clearable placeholder="请输入Value值"></el-input>
 														</el-col>
 														<el-col :span="8">
 															<el-select v-model="item2.handle">
@@ -411,7 +412,7 @@
 						})
 					},
 					getBranch({name,signal}){
-						axios.get(api.devops_git_branch,{params:{name:name.join(',')}}).then(function (result) {
+						axios.get(api.devops_git_branch,{params:{name}}).then(function (result) {
 							let data=result.data;
 							if(data.status==1){
 								data=data.data;
