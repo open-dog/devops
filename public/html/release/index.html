@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <!-- import CSS -->
-    <link rel="stylesheet" href="../../css/element-ui.css">
+    <link rel="stylesheet" href="../../../public/css/element-ui.css">
     <style>
         .el-table .warning-row {
             background: oldlace;
@@ -30,6 +30,7 @@
     </style>
 </head>
 <body>
+<br>
 <div id="app">
 
     <el-container>
@@ -40,11 +41,10 @@
                 <el-col :span="24">
                     <el-breadcrumb separator="/">
                         <el-breadcrumb-item :to="{ path: '/devops/release/index' }">工单</el-breadcrumb-item>
-                        <el-breadcrumb-item><a href="/devops/release/index">工单列表</a></el-breadcrumb-item>
+                        <el-breadcrumb-item><a href="/admin/devops/release/list">工单列表</a></el-breadcrumb-item>
                     </el-breadcrumb>
                 </el-col>
             </el-row>
-
 
 
         </el-header>
@@ -65,12 +65,12 @@
                     </div>
                 </el-col>
                 <el-col :span="14">
-                    <div class="grid-content bg-purple">
+                    <div class="grid-content">
                         <el-button  type="primary" @click="searchRelease(id, author)">搜索</el-button>
                     </div>
                 </el-col>
                 <el-col :span="2">
-                    <div class="grid-content bg-purple">
+                    <div class="grid-content">
                         <el-button justify="end"  type="success" @click="addRelease()">添加工单</el-button>
                     </div>
                 </el-col>
@@ -81,7 +81,7 @@
             </el-row>
             <!-- 表格 -->
             <template>
-                <el-table :data="tableData" border style="width: 100%" :row-class-name="tableRowClassName">
+                <el-table :data="tableData" stripe border style="width: 100%" :row-class-name="tableRowClassName">
                     <el-table-column prop="id" label="工单Id" width="180"></el-table-column>
                     <el-table-column prop="title" label="工单名" width="180"></el-table-column>
                     <el-table-column prop="author" label="提交者"></el-table-column>
@@ -114,11 +114,11 @@
 </div>
 </body>
 <!-- import Vue before Element -->
-<script src="../../js/vue.js"></script>
+<script src="../../../public/js/vue.js"></script>
 <!-- import JavaScript -->
-<script src="../../js/element-ui.js"></script>
-<script src="../../js/axios.min.js"></script>
-<script src="../../js/api.js"></script>
+<script src="../../../public/js/element-ui.js"></script>
+<script src="../../../public/js/axios.min.js"></script>
+<script src="../../../public/js/api.js"></script>
 <script>
 
     var vm = new Vue({
@@ -126,23 +126,23 @@
         methods: {
             //处理样式问题
             tableRowClassName({row, rowIndex}) {
-                if (rowIndex === 0) {
-                    return 'warning-row';
-                } else if (rowIndex === 1) {
-                    return 'success-row';
-                }
+                // if (rowIndex % 2 == 0) {
+                //     return 'warning-row';
+                // } else if (rowIndex % 2 == 1) {
+                //     return 'success-row';
+                // }
                 return '';
             },
             infoRelease(row) {
-                goJump("/devops/release/info?release_id=" + row.id)
+                goJump("/admin/devops/release/info?release_id=" + row.id)
             },
             editRelease(row) {
                 console.log(row.id)
-                goJump("/devops/release/add?release_id=" + row.id)
+                goJump("/admin/devops/release/add?release_id=" + row.id)
             },
             //添加工单
             addRelease() {
-                goJump("/devops/release/add")
+                goJump("/admin/devops/release/add")
             },
             // 搜索数据
             searchRelease(id, author){

@@ -15,6 +15,16 @@ func InitRouter(r *gin.Engine)  {
 	// 设置静态文件目录
 	r.Static("/public", "./public")
 
+	//重定向
+	r.GET("/", func(ctx *gin.Context) {
+		ctx.Request.URL.Path = "/admin/application/info"
+		r.HandleContext(ctx)
+	})
+	r.GET("/admin", func(ctx *gin.Context) {
+		ctx.Request.URL.Path = "/admin/application/info"
+		r.HandleContext(ctx)
+	})
+
 	apiv1 := r.Group("/v1")
 	{
 		devops := apiv1.Group("/devops")
