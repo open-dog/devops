@@ -7,11 +7,12 @@ type EditReleaseParam struct {
 
 //添加工单的请求参数
 type AddReleaseParam struct {
-	Title   string     `json:"title" form:"title"`  //解析对应的工单名
-	Author  string     `json:"author" form:"title"` //解析对应的提交者名
-	Sql     *[]Sql     `json:"sql"`                 //解析对应需要执行的sql语句
-	Package *[]Package `json:"package"`             //解析对应的包名
-	Service *[]Service `json:"service"`             //解析对应脚本名
+	Title   string     `json:"title" form:"title"`     //解析对应的工单名
+	Author  string     `json:"author" form:"title"`    //解析对应的提交者名
+	Content string     `json:"content" form:"content"` //解析对应的备注
+	Sql     *[]Sql     `json:"sql"`                    //解析对应需要执行的sql语句
+	Package *[]Package `json:"package"`                //解析对应的包名
+	Service *[]Service `json:"service"`                //解析对应脚本名
 
 }
 

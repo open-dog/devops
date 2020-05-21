@@ -3,12 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Title</title>
-	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="/public/css/index.css">
+	<script src="/public/js/vue.js"></script>
 	<!-- import JavaScript -->
-	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-	<script src="./js/api.js"></script>
+	<script src="/public/js/element-ui.js"></script>
+	<script src="/public/js/axios.min.js"></script>
+	<script src="/public/js/api.js"></script>
 	<style>
 		.fields-group{
 			margin:10px 0;border: 1px dashed lightgrey;border-radius: 10px;padding: 5px 10px;
@@ -38,14 +38,11 @@
 	<el-container>
 
 		<!-- 页面头信息 -->
-		<el-header>
+		<el-header height="30px;">
 			<el-row>
 				<el-col :span="24">
-					<div class="grid-content bg-purple-light">
-		                <span>
-		                    工单> <small>添加工单</small>
-		                </span>
-					</div>
+					<el-page-header @back="goBack" content="添加工单">
+					</el-page-header>
 				</el-col>
 			</el-row>
 		</el-header>
@@ -250,7 +247,7 @@
 					<el-row>
 						<el-col :span="22">
 							<el-form-item label="">
-								<el-button @click="back">返回</el-button>
+								<el-button @click="goBack">返回</el-button>
 								<el-button @click="submit" type="primary" style="margin-left: 40%">提交</el-button>
 							</el-form-item>
 						</el-col>
@@ -416,7 +413,7 @@
 						   }
                            app.loading=false;
 						}).catch(function (e) {
-							app.$message.error(e)
+							app.$message.error(e);
 							app.loading=false;
 						})
 					},
@@ -433,8 +430,8 @@
 							app.$message.error(e)
 						})
 					},
-					back(){
-						history.back();
+					goBack(){
+					    history.back()
 					}
 				}
 			}

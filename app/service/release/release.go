@@ -32,9 +32,9 @@ func (r *ReleaseService) Add (data *releasestruct.AddReleaseParam) ( error) {
 		release_res, err := tx.Table("devops_release").Data(g.Map{
 			"title":data.Title,
 			"author":data.Author,
-			"content":"",
+			"content":data.Content,
 			"status":1,
-			"created_at":gtime.Date(),
+			"created_at":gtime.Datetime(),
 			"updated_at" : gtime.Datetime(),
 		}).Save()
 		if err != nil {
@@ -179,6 +179,7 @@ func (r *ReleaseService) List(release_id int, author string, page int) (g.Map, e
 		max_limit := page*PERPAGE
 		mod.Limit( min_limit, max_limit)
 	}
+	mod.Order("id desc")
 	resp, err := mod.All()
 	if err != nil {
 		return res, err
@@ -204,7 +205,7 @@ func (r *ReleaseService) Edit(data *releasestruct.EditReleaseParam) (error) {
 		_, err := tx.Table("devops_release").Data(g.Map{
 			"title":data.Title,
 			"author":data.Author,
-			"content":"",
+			"content":data.Content,
 			"updated_at" : gtime.Datetime(),
 		}).Where("id", data.Id).Update()
 		if err != nil {

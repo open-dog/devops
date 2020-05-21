@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="/public/css/element-ui.css">
+    <style>
+        .fields-group{
+            margin:10px 0;border: 1px dashed lightgrey;border-radius: 10px;padding: 5px 10px;
+        }
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+
+
+        body > .el-container {
+            margin-bottom: 40px;
+        }
+        .el-container:nth-child(5) .el-aside,
+        .el-container:nth-child(6) .el-aside {
+            line-height: 260px;
+        }
+
+        .el-container:nth-child(7) .el-aside {
+            line-height: 320px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <el-container>
+        <el-header height="30px;">
+                <el-row>
+                    <el-col :span="24">
+                        <el-page-header @back="goBack" content="详情页面">
+                        </el-page-header>
+                    </el-col>
+                </el-row>
+        </el-header>
+        <el-main>
+            <!-- 主体信息 id,作者,状态, -->
+
+            <el-alert title="工单基本信息：" type="success" :closable="false">
+            </el-alert>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-table :data="mainTable" border >
+                        <el-table-column prop="id" label="工单Id" ></el-table-column>
+                        <el-table-column prop="title" label="工单标题" ></el-table-column>
+                        <el-table-column prop="author" label="申请人"></el-table-column>
+                        <el-table-column prop="status" label="状态"></el-table-column>
+                        <el-table-column prop="content" label="内容"></el-table-column>
+                        <el-table-column prop="created_at" label="添加时间"></el-table-column>
+                        <el-table-column prop="updated_at" label="修改时间"></el-table-column>
+                    </el-table>
+                </el-col>
+            </el-row>
+
+
+            <!-- sql语句执行信息 -->
+
+            <br>
+            <el-alert title="数据库执行操作：" type="success" :closable="false">
+            </el-alert>
+            <el-row>
+                <el-col :span="24">
+                    <el-table :data="sqlTable" border >
+                        <el-table-column prop="id" label="Id" ></el-table-column>
+                        <el-table-column prop="db" label="数据库" ></el-table-column>
+                        <el-table-column prop="crud" label="执行语句"></el-table-column>
+                        <el-table-column prop="remark" label="描叙"></el-table-column>
+                    </el-table>
+                </el-col>
+            </el-row>
+
+            <!-- package包发布信息 -->
+            <br>
+            <el-alert title="Package包执行操作：" type="success" :closable="false">
+            </el-alert>
+            <el-row>
+                <el-col :span="24">
+                    <el-table :data="packageTable" border >
+                        <el-table-column prop="id" label="Id" ></el-table-column>
+                        <el-table-column prop="name" label="package名" ></el-table-column>
+                        <el-table-column prop="branch" label="分支名"></el-table-column>
+                    </el-table>
+                </el-col>
+            </el-row>
+
+            <!-- service发布信息 -->
+            <br>
+            <el-alert title="Service发布操作：" type="success" :closable="false">
+            </el-alert>
+            <el-row>
+                <el-col :span="24">
+                    <el-table :data="serviceTable" border >
+                        <el-table-column prop="id" label="Id" ></el-table-column>
+                        <el-table-column prop="name" label="服务名" ></el-table-column>
+                        <el-table-column prop="branch" label="分支名"></el-table-column>
+                        <el-table-column prop="env" label="env配置">
+                            <el-table :data="serviceTable.env" border >
+                                <el-table-column prop="key" label="键" ></el-table-column>
+                                <el-table-column prop="value" label="值" ></el-table-column>
+                                <el-table-column prop="handle" label="操作" ></el-table-column>
+                            </el-table>
+                        </el-table-column>
+                        <el-table-column prop="" label="脚本">
+                            <el-table :data="serviceTable.script" border >
+                                <el-table-column prop="cmd" label="执行命令" ></el-table-column>
+                                <el-table-column prop="remark" label="描述" ></el-table-column>
+                            </el-table>
+                        </el-table-column>
+                    </el-table>
+                </el-col>
+            </el-row>
+
+        </el-main>
+        <el-footer></el-footer>
+    </el-container>
+
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="/public/js/vue.js"></script>
+<!-- import JavaScript -->
+<script src="/public/js/element-ui.js"></script>
+<script src="/public/js/axios.min.js"></script>
+<script src="/public/js/api.js"></script>
+<script>
+
+    var vm = new Vue({
+        el: '#app',
+        methods: {
+            //处理样式问题
+            goBack:function () {
+                history.back()
+            }
+        },
+        data: function() {
+            let params=new URLSearchParams(location.search);
+            let release_id=params.get('release_id');
+            return {
+                release_id : release_id,
+                mainTable : [
+                    {"id":1, "author":"admin", "status":"", "title":"title", "content":"content", "created_at":"", "updated_at":""},
+                ],
+                sqlTable :[],
+                packageTable:[],
+                serviceTable:[],
+            };
+        },
+        mounted: function () {
+            axios({
+                method : "get",
+                url : api.devops_release_info,
+                params :{release_id:this.release_id}
+            }).then(function (data) {
+                if (data.data.status){
+                    let api_data = data.data.data
+                    //解析相关的参数到指定的容器
+                    vm.mainTable = [{
+                        "id":api_data.id,
+                        "title":api_data.title,
+                        "author":api_data.author,
+                        "status":api_data.status,
+                        "content":api_data.content,
+                        "created_at":api_data.created_at,
+                        "updated_at":api_data.updated_at,
+                    }];
+                    vm.sqlTable = api_data.sql;
+                    vm.packageTable = api_data.package;
+                    vm.serviceTable = api_data.service;
+                }
+            }).catch(function (error) {
+                //执行一些弹框
+            })
+        }
+    });
+
+
+</script>
+</html>

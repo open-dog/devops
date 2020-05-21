@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <!-- import CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="/public/css/element-ui.css">
     <style>
         .el-table .warning-row {
             background: oldlace;
@@ -38,13 +38,14 @@
         <el-header height="30px;">
             <el-row>
                 <el-col :span="24">
-                    <div class="grid-content bg-purple-light">
-                        <span>
-                            工单> <small>工单列表</small>
-                        </span>
-                    </div>
+                    <el-breadcrumb separator="/">
+                        <el-breadcrumb-item :to="{ path: '/devops/release/index' }">工单</el-breadcrumb-item>
+                        <el-breadcrumb-item><a href="/devops/release/index">工单列表</a></el-breadcrumb-item>
+                    </el-breadcrumb>
                 </el-col>
             </el-row>
+
+
 
         </el-header>
 
@@ -113,13 +114,12 @@
 </div>
 </body>
 <!-- import Vue before Element -->
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="/public/js/vue.js"></script>
 <!-- import JavaScript -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="/public/js/element-ui.js"></script>
+<script src="/public/js/axios.min.js"></script>
+<script src="/public/js/api.js"></script>
 <script>
-
-    const hostname = "http://localhost:8089";
 
     var vm = new Vue({
         el: '#app',
@@ -134,14 +134,15 @@
                 return '';
             },
             infoRelease(row) {
-                console.log(row.id);
+                goJump("/devops/release/info?release_id=" + row.id)
             },
             editRelease(row) {
                 console.log(row.id)
+                goJump("/devops/release/add?release_id=" + row.id)
             },
             //添加工单
             addRelease() {
-                window.location.href = hostname + "/devops/release/add";
+                goJump("/devops/release/add")
             },
             // 搜索数据
             searchRelease(id, author){
@@ -151,6 +152,7 @@
             // 当前页操作
             currentChange(page){
                 console.log(this.id, this.author, page)
+                getlist(this.id, this.author, page)
             }
         },
         data: function() {
@@ -170,7 +172,7 @@
     function getlist(id, author, page) {
         axios({
             method : "get",
-            url : hostname + "/v1/devops/release/list",
+            url : api.devops_release_list,
             params :{id:id, author:author, page:page}
         }).then(function (data) {
             if (data.data.status){
@@ -181,6 +183,10 @@
         }).catch(function (error) {
            //执行一些弹框
         });
+    }
+    
+    function goJump(url) {
+        window.location.href = hostname + url
     }
 </script>
 </html>

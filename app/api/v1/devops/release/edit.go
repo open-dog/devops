@@ -7,7 +7,6 @@ import (
 	"go-admin/app/helper"
 	"go-admin/app/model/devops/releasestruct"
 	"go-admin/app/service/release"
-	"log"
 )
 
 //编辑
@@ -16,12 +15,14 @@ func EditRelease(ctx *gin.Context)  {
 
 	edit_param := new(releasestruct.EditReleaseParam)
 	if err:= json.Unmarshal(byte_param, edit_param); err != nil {
-		log.Panic(err)
+		helper.ErrorResponse(ctx, nil, err.Error())
+		return
 	}
 	err := release.NewReleaseService().Edit(edit_param)
 
 	if err != nil {
-		log.Fatal(err)
+		helper.ErrorResponse(ctx, nil, err.Error())
+		return
 	}
 	helper.SuccessResponse(ctx, g.List{})
 
