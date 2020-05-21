@@ -3,12 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Title</title>
-	<link rel="stylesheet" href="/public/css/index.css">
-	<script src="/public/js/vue.js"></script>
+	<link rel="stylesheet" href="../../css/index.css">
+	<script src="../../js/vue.js"></script>
 	<!-- import JavaScript -->
-	<script src="/public/js/element-ui.js"></script>
-	<script src="/public/js/axios.min.js"></script>
-	<script src="/public/js/api.js"></script>
+	<script src="../../js/element-ui.js"></script>
+	<script src="../../js/axios.min.js"></script>
+	<script src="../../js/api.js"></script>
 	<style>
 		.fields-group{
 			margin:10px 0;border: 1px dashed lightgrey;border-radius: 10px;padding: 5px 10px;
@@ -30,6 +30,19 @@
 		}
 		.el-select{
 			width: 100%!important;
+		}
+		.el-select-group__title {
+			padding-left: 10px;
+			font-size: 20px;
+			color: black;
+			line-height: 35px;
+			background: rgba(0,0,0,0.1);
+			font-weight: 700;
+			position: relative;
+		}
+		.el-select-group__title::after{
+			content: '（包下分支列表）';
+			font-size: 12px;
 		}
 	</style>
 </head>
@@ -83,7 +96,7 @@
 								<div v-for="(item,ind) in form.sql" :key="ind" class="fields-group">
 									<el-row>
 										<el-col :span="10">
-											<el-select v-model="item.db" placeholder="请选择库名">
+											<el-select v-model="item.db" filterable multiple clearable placeholder="请选择库名">
 												<el-option label="请选择库名" value="''"></el-option>
 												<el-option :label="db.label" :value="db.value" v-for="db in databases"></el-option>
 											</el-select>
@@ -113,15 +126,20 @@
 								<div v-for="(item,ind) in form.package" :key="ind" class="fields-group">
 									<el-row :gutter="10" style="margin-top: 10px;margin-bottom: 10px;">
 										<el-col :span="10">
-											<el-select v-model="item.name" placeholder="请选择包名">
+											<el-select v-model="item.name" filterable multiple clearable placeholder="请选择包名" @change="selectChange(item.name,`package_${ind}`)">
 												<el-option label="请选择包名" value="''"></el-option>
 												<el-option :label="option.label" :value="option.value" v-for="option in packages"></el-option>
 											</el-select>
 										</el-col>
 										<el-col :span="12">
-											<el-select v-model="item.branch" placeholder="请选择分支">
+											<el-select v-model="item.branch" filterable multiple clearable placeholder="请选择分支" @visible-change="visibleChange(`package_${ind}`)">
 												<el-option label="请选择分支" value="''"></el-option>
-												<el-option :label="option.label" :value="option.value" v-for="option in branches"></el-option>
+												<el-option-group v-if="branches[`package_${ind}`]"
+														v-for="(group,prop) in branches[`package_${ind}`]"
+														:key="prop"
+														:label="prop">
+													<el-option :label="option.label" :value="option.value" v-for="option in group"></el-option>
+												</el-option-group>
 											</el-select>
 										</el-col>
 										<el-col :span="2">
@@ -153,15 +171,20 @@
 								<div v-for="(item,ind) in form.service" class="fields-group">
 									<el-row :gutter="10" style="margin-top: 10px;margin-bottom: 10px;">
 										<el-col :span="10">
-											<el-select v-model="item.name" placeholder="请选择服务器名">
+											<el-select v-model="item.name" filterable multiple clearable placeholder="请选择服务器名" @change="selectChange(item.name,`service_${ind}`)">
 												<el-option label="请选择服务器名" value="''"></el-option>
 												<el-option :label="option.label" :value="option.value" v-for="option in services"></el-option>
 											</el-select>
 										</el-col>
 										<el-col :span="12">
-											<el-select v-model="item.branch" placeholder="请选择分支名">
+											<el-select v-model="item.branch" filterable multiple clearable placeholder="请选择分支名" @visible-change="visibleChange(`service_${ind}`)">
 												<el-option label="请选择分支" value="''"></el-option>
-												<el-option :label="option.label" :value="option.value" v-for="option in branches"></el-option>
+												<el-option-group
+														v-for="(group,prop) in branches[`service_${ind}`]"
+														:key="prop"
+														:label="prop">
+													<el-option :label="option.label" :value="option.value" v-for="option in group"></el-option>
+												</el-option-group>
 											</el-select>
 										</el-col>
 										<el-col :span="2">
@@ -183,10 +206,10 @@
 													</el-row>
 													<el-row v-for="(item2,index) in item.env" :gutter="10" style="margin-top:10px;margin-bottom: 10px;margin-left: 10px; ">
 														<el-col :span="6">
-															<el-input v-model="item2.key" placeholder="请输入Key值"></el-input>
+															<el-input v-model="item2.key" filterable multiple clearable placeholder="请输入Key值"></el-input>
 														</el-col>
 														<el-col :span="6">
-															<el-input v-model="item2.value" placeholder="请输入Value值"></el-input>
+															<el-input v-model="item2.value" filterable multiple clearable placeholder="请输入Value值"></el-input>
 														</el-col>
 														<el-col :span="8">
 															<el-select v-model="item2.handle">
@@ -317,14 +340,7 @@
 						/**
 						 * 分支名 可以从接口获取后赋值给该字段
 						 */
-						branches:[
-							{label:'分支1',value:1},
-							{label:'分支2',value:2},
-							{label:'分支3',value:3},
-							{label:'分支4',value:4},
-							{label:'分支5',value:5},
-							{label:'分支6',value:6},
-						],
+						branches:{},
 						/**
 						 * 服务器名 可以从接口获取后赋值给该字段
 						 */
@@ -346,7 +362,10 @@
 						this.getInfo();
 					}
 					this.getCommon();
-					this.getBranch();
+					if(this.name!=null&&this.name!=''){
+						this.getBranch(this.name);
+					}
+
 				},
 				methods:{
 					del(type,ind,prop,itemIndex){
@@ -367,6 +386,15 @@
 
 						console.info(this.form);
 					},
+					selectChange(name,signal){
+						this.getBranchParams={name,signal};
+					},
+					visibleChange(signal){
+						//当展示的下拉框和选择的包或服务器是同一组建的时候才会发送请求。
+						if(event.type=='focus'&&signal==this.getBranchParams.signal){
+							this.getBranch(this.getBranchParams);
+						}
+					},
 					getCommon(){
 						axios.get(api.devops_release_common).then(function (result) {
 							let data=result.data;
@@ -382,14 +410,12 @@
 							console.error(e);
 						})
 					},
-					getBranch(){
-						let params=new URLSearchParams(location.search);
-						let name=params.get('name')||'user-package';
-						axios.get(api.devops_git_branch,{params:{name:name}}).then(function (result) {
+					getBranch({name,signal}){
+						axios.get(api.devops_git_branch,{params:{name:name.join(',')}}).then(function (result) {
 							let data=result.data;
 							if(data.status==1){
 								data=data.data;
-								app.branches=data;
+								app.$set(app.branches,signal,data);
 							}else{
 								alert(data.msg);
 							}
