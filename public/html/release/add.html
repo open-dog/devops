@@ -231,7 +231,7 @@
 												<div class="fields-group">
 													<el-row>
 														<el-col>
-															<el-button @click="add('service',{
+															<el-button type="primary" @click="add('service',{
 										cmd:'',
 										remark:'',
 									},'script',ind)">增加</el-button>
@@ -446,12 +446,13 @@
 						})
 					},
 					submit(){
-						let url=this.release_id!=''?api.devops_release_edit:api.devops_release_add
+						let url=this.release_id!='' && this.release_id != null?api.devops_release_edit:api.devops_release_add
 						axios.post(url,this.form).then(function (result) {
 							let data=result.data;
 							if(data.status==1){
 								app.$message.success('数据提交成功');
-							}else{
+                                window.location.replace(document.referrer);
+                            }else{
 								app.$message.error(data.msg)
 							}
 						}).catch(function (e) {
@@ -459,7 +460,7 @@
 						})
 					},
 					goBack(){
-					    history.back()
+                        window.location.replace(document.referrer);
 					}
 				}
 			}

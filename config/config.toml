@@ -3,11 +3,11 @@
 # Mysql相关配置文件
 [database]
     [[database.default]]
-        host     = "127.0.0.1"
+        host     = "localhost"
         port     = "3306"
         user     = "root"
-        pass     = "root"
-        name     = "go_admin"
+        pass     = "4AjzsNI6Tn!C"
+        name     = "devops"
         type     = "mysql"
         role     = "master"
         charset  = "utf8"

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	_ "github.com/GoAdminGroup/go-admin/adapter/gin" // 引入适配器，必须引入，如若不引入，则需要自己定义
 	"github.com/GoAdminGroup/go-admin/engine"
 	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql" // 引入对应数据库引擎
@@ -10,6 +11,11 @@ import (
 	"go-admin/boot"
 	"go-admin/router"
 	"go-admin/router/admin"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"time"
 )
 
 func main() {
@@ -29,5 +35,24 @@ func main() {
 	//注册一些web页面到路由中
 	admin.InitRouter(eng)
 
-	_ = r.Run(":8089")
+	//实现服务的优雅关闭与重启
+	srv := &http.Server{
+		Addr:              ":8089",
+		Handler:           r,
+	}
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Printf("listen: %s\n", err)
+		}
+	}()
+
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit //阻塞，直到接收到信号
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("server shutdown: ", err)
+	}
 }

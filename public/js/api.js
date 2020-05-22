@@ -1,4 +1,4 @@
-var hostname='http://10.1.2.8:8089';
+var hostname='http://10.1.2.37:8089';
 var version='/v1/';
 host=hostname+version;
 let api={
