@@ -137,9 +137,9 @@ func (r *ReleaseService) Info(release_id int) (g.Map, error) {
 	}
 
 	service_list := service.List()
-	var env g.List
-	var script g.List
 	for _, s := range service_list {
+		env := g.List{}
+		script := g.List{}
 		json.Unmarshal([]byte(gconv.String(s["env"])), &env)
 		json.Unmarshal([]byte(gconv.String(s["script"])), &script)
 		s["env"] = env
@@ -323,6 +323,9 @@ func (r *ReleaseService) Export(release_id string) (*releasestruct.OnlineInfo, e
 		json.Unmarshal([]byte(gconv.String(item["script"])), &script_list)
 		rsp_env := []*releasestruct.Env{}
 		for _, env_map := range env_list{
+			if g.IsEmpty(env_map["handle"]) && g.IsEmpty(env_map["key"]) && g.IsEmpty(env_map["value"]) {
+				continue
+			}
 			rsp_env = append(rsp_env, &releasestruct.Env{
 				Handle: gconv.String(env_map["handle"]),
 				Key:    gconv.String(env_map["key"]),
@@ -332,6 +335,9 @@ func (r *ReleaseService) Export(release_id string) (*releasestruct.OnlineInfo, e
 
 		rsp_script := []*releasestruct.Script{}
 		for _, script_map := range script_list{
+			if g.IsEmpty(script_map["cmd"]) && g.IsEmpty(script_map["remark"]) {
+				continue
+			}
 			rsp_script = append(rsp_script, &releasestruct.Script{
 				Cmd:    gconv.String(script_map["cmd"]),
 				Remark: gconv.String(script_map["remark"]),
