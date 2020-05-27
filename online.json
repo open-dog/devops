@@ -31,6 +31,7 @@
   "service": [
     {
       "service_name": "服务名",
+      "version": "v1",
       "branch_name": "分支名",
       "env": [
         {
@@ -39,7 +40,7 @@
           "value": "例如：off"
         },
         {
-          "handle": "add(对应的相关操作，增加，删除delete，修改update)",
+          "handle": "add(对应的相关操作，增加，del，修改update)",
           "key": "",
           "value": ""
         }
