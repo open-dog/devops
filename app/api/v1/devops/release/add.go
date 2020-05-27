@@ -15,7 +15,7 @@ func AddRelease(ctx *gin.Context) {
 	byte_param := helper.GetContent(ctx)
 
 	add_param := new(releasestruct.AddReleaseParam)
-	if err:= json.Unmarshal(byte_param, add_param); err != nil {
+	if err := json.Unmarshal(byte_param, add_param); err != nil {
 		helper.ErrorResponse(ctx, nil, err.Error())
 		return
 	}
@@ -27,6 +27,5 @@ func AddRelease(ctx *gin.Context) {
 		return
 	}
 	helper.SuccessResponse(ctx, g.List{})
-
 
 }

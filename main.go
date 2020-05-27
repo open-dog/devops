@@ -24,7 +24,6 @@ func main() {
 	// 实例化一个GoAdmin引擎对象
 	eng := engine.Default()
 
-
 	// 增加配置与插件，使用Use方法挂载到Web框架中
 	_ = eng.AddConfig(boot.Cfg()).
 		// 这里引入你需要管理的业务表配置
@@ -37,8 +36,8 @@ func main() {
 
 	//实现服务的优雅关闭与重启
 	srv := &http.Server{
-		Addr:              ":8089",
-		Handler:           r,
+		Addr:    ":8089",
+		Handler: r,
 	}
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {

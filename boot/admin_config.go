@@ -12,7 +12,7 @@ var (
 )
 
 //初始化对应的变量
-func init()  {
+func init() {
 	// GoAdmin全局配置，也可以写成一个json，通过json引入
 	cfg = config.Config{
 		// 数据库配置，为一个map，key为连接名，value为对应连接信息
@@ -28,7 +28,7 @@ func init()  {
 	}
 }
 
-func GetDatabaseList() config.DatabaseList  {
+func GetDatabaseList() config.DatabaseList {
 	db := g.Cfg().Get("database.default.0")
 	return config.DatabaseList{
 		// 默认数据库连接，名字必须为default
@@ -46,6 +46,6 @@ func GetDatabaseList() config.DatabaseList  {
 }
 
 // 返回对应的配置文件
-func Cfg() config.Config  {
+func Cfg() config.Config {
 	return cfg
 }

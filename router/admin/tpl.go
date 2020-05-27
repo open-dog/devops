@@ -27,6 +27,4 @@ func InitRouter(eng *engine.Engine) {
 
 	//欢迎页
 
-
-
 }

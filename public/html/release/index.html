@@ -55,13 +55,13 @@
             <el-row :gutter="24">
                 <el-col :span="4">
                     <div class="grid-content bg-purple">
-                        <el-input v-model="id" placeholder="请输入工单Id"></el-input>
+                        <el-input v-model="id" @change="searchRelease(id, author)" placeholder="请输入工单Id"></el-input>
                     </div>
                 </el-col>
 
                 <el-col :span="4">
                     <div class="grid-content bg-purple">
-                        <el-input v-model="author" placeholder="请输入提交人"></el-input>
+                        <el-input v-model="author" @change="searchRelease(id, author)"  placeholder="请输入提交人"></el-input>
                     </div>
                 </el-col>
                 <el-col :span="14">
@@ -86,13 +86,14 @@
                     <el-table-column prop="title" label="工单名" width="180"></el-table-column>
                     <el-table-column prop="author" label="提交者"></el-table-column>
                     <el-table-column prop="status" label="状态"></el-table-column>
-                    <el-table-column prop="content" label="描述"></el-table-column>
+                    <el-table-column prop="content" label="描述" width="400px;"></el-table-column>
                     <el-table-column prop="created_at" label="添加时间"></el-table-column>
                     <el-table-column prop="updated_at" label="修改时间"></el-table-column>
-                    <el-table-column fixed="right" label="操作" width="100">
+                    <el-table-column fixed="right" label="操作" width="140">
                         <template slot-scope="scope">
                             <el-button @click="infoRelease(scope.row)" type="text" size="small">查看</el-button>
                             <el-button @click="editRelease(scope.row)" type="text" size="small">编辑</el-button>
+                            <el-button @click="exportRelease(scope.row)" type="text" size="small">导出</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -134,15 +135,19 @@
                 return '';
             },
             infoRelease(row) {
-                goJump("/admin/devops/release/info?release_id=" + row.id)
+                goJump(admin.admin_devops_release_info + "?release_id=" + row.id)
             },
             editRelease(row) {
-                console.log(row.id)
-                goJump("/admin/devops/release/add?release_id=" + row.id)
+                console.log(row.id);
+                goJump(admin.admin_devops_release_add + "?release_id=" + row.id)
             },
             //添加工单
             addRelease() {
-                goJump("/admin/devops/release/add")
+                goJump(admin.admin_devops_release_add)
+            },
+            //导出数据
+            exportRelease(row) {
+                goJump(api.devops_release_export + "?release_id=" + row.id)
             },
             // 搜索数据
             searchRelease(id, author){
@@ -153,7 +158,7 @@
             currentChange(page){
                 console.log(this.id, this.author, page)
                 getlist(this.id, this.author, page)
-            }
+            },
         },
         data: function() {
             return {
@@ -186,7 +191,7 @@
     }
 
     function goJump(url) {
-        window.location.href = hostname + url
+        window.location.href = url
     }
 </script>
 </html>

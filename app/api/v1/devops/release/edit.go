@@ -10,11 +10,11 @@ import (
 )
 
 //编辑
-func EditRelease(ctx *gin.Context)  {
+func EditRelease(ctx *gin.Context) {
 	byte_param := helper.GetContent(ctx)
 
 	edit_param := new(releasestruct.EditReleaseParam)
-	if err:= json.Unmarshal(byte_param, edit_param); err != nil {
+	if err := json.Unmarshal(byte_param, edit_param); err != nil {
 		helper.ErrorResponse(ctx, nil, err.Error())
 		return
 	}

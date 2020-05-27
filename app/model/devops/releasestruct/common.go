@@ -20,6 +20,7 @@ type Service struct {
 	Id     int       `json:"id"`
 	Name   string    `json:"name"`
 	Branch string    `json:"branch"`
+	Version string   `json:"version"`
 	Env    []*Env    `json:"env"`
 	Script []*Script `json:"script"`
 }

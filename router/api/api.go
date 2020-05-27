@@ -7,7 +7,7 @@ import (
 	"go-admin/app/service/manage"
 )
 
-func InitRouter(r *gin.Engine)  {
+func InitRouter(r *gin.Engine) {
 
 	//解决接口跨域问题
 	r.Use(middleware.Cors(), middleware.Err())
@@ -33,6 +33,7 @@ func InitRouter(r *gin.Engine)  {
 			devops.GET("/release/info", release.InfoRelease)
 			devops.GET("/release/list", release.ListRelease)
 			devops.POST("/release/edit", release.EditRelease)
+			devops.GET("/release/export", release.ExportRelease)
 			devops.GET("/git/branch", release.Branch)
 			devops.GET("/release/common", release.GetCommon)
 		}

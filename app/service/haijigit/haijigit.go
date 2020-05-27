@@ -54,7 +54,7 @@ func GetServerAddress(server_name string) string {
 	for _, service := range ServerNameList() {
 		if service["key"] == server_name {
 			if val, ok := service["val"]; ok {
-				return  gconv.String(val)
+				return gconv.String(val)
 			}
 		}
 	}
@@ -83,7 +83,7 @@ func GetBranchNameByName(name string) (g.List, error) {
 	}
 	fmt.Println(code_address)
 
-	cmd := "cd ./code/" + name +" && git branch -r"
+	cmd := "cd ./code/" + name + " && git branch -r"
 	out, err := helper.Cmd(cmd, true)
 	if err != nil {
 		return branch_list, err
@@ -92,7 +92,7 @@ func GetBranchNameByName(name string) (g.List, error) {
 
 	for _, item := range list_arr {
 		if item != "" && !strings.Contains(item, "HEAD") {
-			branch_list = append(branch_list, g.Map{"label":strings.TrimSpace(item), "value":strings.TrimSpace(item)})
+			branch_list = append(branch_list, g.Map{"label": strings.TrimSpace(item), "value": strings.TrimSpace(item)})
 		}
 	}
 

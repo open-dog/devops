@@ -11,7 +11,7 @@ import (
 
 var (
 	once sync.Once
-	m *mgo.Session
+	m    *mgo.Session
 )
 
 //返回单例的
@@ -29,13 +29,13 @@ func getSession() *mgo.Session {
 	config := g.Cfg().GetMap("mongodb.default.0")
 
 	dialInfo := &mgo.DialInfo{
-		Addrs:          []string{gconv.String(config["address"])},
-		Timeout:        time.Second * time.Duration(gconv.Int64(config["timeout"])),
-		Database:       gconv.String(config["database"]),
-		Source:         gconv.String(config["source"]),
-		Username:       gconv.String(config["username"]),
-		Password:       gconv.String(config["password"]),
-		PoolLimit:      gconv.Int(config["poollimit"]),
+		Addrs:     []string{gconv.String(config["address"])},
+		Timeout:   time.Second * time.Duration(gconv.Int64(config["timeout"])),
+		Database:  gconv.String(config["database"]),
+		Source:    gconv.String(config["source"]),
+		Username:  gconv.String(config["username"]),
+		Password:  gconv.String(config["password"]),
+		PoolLimit: gconv.Int(config["poollimit"]),
 	}
 
 	session, err := mgo.DialWithInfo(dialInfo)
@@ -45,4 +45,3 @@ func getSession() *mgo.Session {
 
 	return session
 }
-

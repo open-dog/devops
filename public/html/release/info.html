@@ -48,7 +48,7 @@
             <el-row>
                 <el-col :span="24">
                     <el-table :data="mainTable" border >
-                        <el-table-column width="60px;" prop="id" label="工单Id" ></el-table-column>
+                        <el-table-column width="80px;" prop="id" label="工单Id" ></el-table-column>
                         <el-table-column prop="title" label="工单标题" ></el-table-column>
                         <el-table-column prop="author" label="申请人"></el-table-column>
                         <el-table-column prop="status" label="状态"></el-table-column>
@@ -97,9 +97,10 @@
             <el-row>
                 <el-col :span="24">
                     <el-table :data="serviceTable" border >
-                        <el-table-column width="60px;" prop="id" label="Id" ></el-table-column>
+                        <el-table-column width="40px;" prop="id" label="Id" ></el-table-column>
                         <el-table-column width="110px;" prop="name" label="服务名" ></el-table-column>
                         <el-table-column width="200px;" prop="branch" label="分支名"></el-table-column>
+                        <el-table-column width="60px;" prop="version" label="版本"></el-table-column>
                         <el-table-column  prop="env" label="env配置">
                             <template slot-scope="scope">
                                 <el-table :data="scope.row.env" border >

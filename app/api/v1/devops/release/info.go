@@ -8,13 +8,13 @@ import (
 )
 
 //详情
-func InfoRelease(ctx *gin.Context){
+func InfoRelease(ctx *gin.Context) {
 
 	release_id := gconv.Int(ctx.Query("release_id"))
 	res, err := release.NewReleaseService().Info(gconv.Int(release_id))
 	if err != nil {
 		helper.ErrorResponse(ctx, nil, err.Error())
-	}else{
+	} else {
 		helper.SuccessResponse(ctx, res)
 	}
 }

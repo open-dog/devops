@@ -9,7 +9,7 @@ var (
 	router *gin.Engine
 )
 
-func init()  {
+func init() {
 	router = gin.Default()
 	//注册api相关路由
 	api.InitRouter(router)
@@ -18,4 +18,3 @@ func init()  {
 func Router() *gin.Engine {
 	return router
 }
-

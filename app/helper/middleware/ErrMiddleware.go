@@ -14,10 +14,9 @@ func Err() gin.HandlerFunc {
 
 		defer func() {
 			if err := recover(); err != nil {
-				helper.ErrorResponse(c,nil, "请求失败")
+				helper.ErrorResponse(c, nil, "请求失败")
 			}
 		}()
 
-		
 	}
 }

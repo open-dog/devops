@@ -16,7 +16,7 @@ var (
 
 // 初始化生成所有的代码
 func main() {
-	maxProcs := runtime.NumCPU()// 获取cpu个数
+	maxProcs := runtime.NumCPU() // 获取cpu个数
 	runtime.GOMAXPROCS(maxProcs)
 
 	git_chan := make(chan string, 30)
@@ -24,11 +24,10 @@ func main() {
 	//控制最大的进程数
 	max_groutine := make(chan bool, 8)
 
-
 	s_list := haijigit.ServerNameList()
 	p_list := haijigit.PackageNameList()
 
-	for _, item := range s_list{
+	for _, item := range s_list {
 		cmd := "git clone " + gconv.String(item["val"])
 		git_chan <- cmd
 	}
@@ -38,9 +37,8 @@ func main() {
 	}
 	close(git_chan)
 
-
 	//开8个goroutine
-	for git_url := range git_chan{
+	for git_url := range git_chan {
 		cmd := "cd ./code && " + git_url
 		wg.Add(1)
 		max_groutine <- true
@@ -51,7 +49,7 @@ func main() {
 				log.Println(err)
 			}
 			out <- gconv.String(res)
-			<- max_groutine
+			<-max_groutine
 		}(cmd, res_chan)
 	}
 
@@ -61,8 +59,5 @@ func main() {
 	for str := range res_chan {
 		fmt.Println(str)
 	}
-
-
-
 
 }

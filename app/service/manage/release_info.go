@@ -5,6 +5,6 @@ import (
 	"net/http"
 )
 
-func ReleaseInfo(ctx *gin.Context)  {
+func ReleaseInfo(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "info.html", nil)
 }

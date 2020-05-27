@@ -21,10 +21,10 @@ const (
 
 func StatusList() g.MapIntStr {
 	return g.MapIntStr{
-		STATUS_INI : "待发布",
-		STATUS_PRE : "预发布",
-		STATUS_ONLINE : "已发布",
-		STATUS_DEL : "已删除",
+		STATUS_INI:    "待发布",
+		STATUS_PRE:    "预发布",
+		STATUS_ONLINE: "已发布",
+		STATUS_DEL:    "已删除",
 	}
 }
 
@@ -42,14 +42,14 @@ func GetDevopsReleaseTable(ctx *context.Context) table.Table {
 	// FieldDisplay 根据字段输出对应的内容
 	info.AddField("状态", "status", db.Tinyint).FieldDisplay(func(model types.FieldModel) interface{} {
 		return StatusList()[gconv.Int(model.Value)]
-	}).FieldFilterable(types.FilterType{FormType:form.Select}).
+	}).FieldFilterable(types.FilterType{FormType: form.Select}).
 		FieldFilterOptions(types.FieldOptions{
 			//todo 需要整理
-			{Value:"1", Text:"待发布"},
-			{Value:"2", Text:"预发布"},
-			{Value:"3", Text:"已发布"},
-			{Value:"8", Text:"已删除"},
-	}).FieldFilterOptionExt(map[string]interface{}{"allowClear":true})
+			{Value: "1", Text: "待发布"},
+			{Value: "2", Text: "预发布"},
+			{Value: "3", Text: "已发布"},
+			{Value: "8", Text: "已删除"},
+		}).FieldFilterOptionExt(map[string]interface{}{"allowClear": true})
 
 	info.AddField("添加时间", "created_at", db.Timestamp)
 	info.AddField("修改时间", "upated_at", db.Timestamp)
@@ -73,12 +73,8 @@ func GetDevopsReleaseTable(ctx *context.Context) table.Table {
 	//新增按钮
 	info.AddButton("添加工单", icon.Adn, action.Jump("devops_release_add"))
 
-
 	//增加列按钮操作
-	info.AddActionButton(`<i class="fa fa-edit"></i>`, action.Jump("/admin/info/permission/edit") )
-
-
-
+	info.AddActionButton(`<i class="fa fa-edit"></i>`, action.Jump("/admin/info/permission/edit"))
 
 	formList := devopsReleaseTable.GetForm()
 
@@ -96,4 +92,3 @@ func GetDevopsReleaseTable(ctx *context.Context) table.Table {
 
 	return devopsReleaseTable
 }
-

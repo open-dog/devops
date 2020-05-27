@@ -12,7 +12,7 @@ import (
 var wg sync.WaitGroup
 
 // 分支相关操作
-func Branch(ctx *gin.Context)  {
+func Branch(ctx *gin.Context) {
 	name_param := ctx.Query("name")
 
 	//解析是否多个分支一起请求
@@ -23,13 +23,13 @@ func Branch(ctx *gin.Context)  {
 
 	//并发请求
 	wg.Add(len(name_slice))
-	for _, name := range name_slice{
+	for _, name := range name_slice {
 		go func(name string, ch *chan g.Map) {
 			defer wg.Done()
 			branch_list, err := haijigit.GetBranchNameByName(name)
 			if err == nil {
 				res := g.Map{
-					name : branch_list,
+					name: branch_list,
 				}
 				branch_list_ch <- res
 			}
@@ -39,7 +39,7 @@ func Branch(ctx *gin.Context)  {
 	close(branch_list_ch)
 	res := g.Map{}
 	for item := range branch_list_ch {
-		for k, v := range item{
+		for k, v := range item {
 			res[k] = v
 		}
 	}
