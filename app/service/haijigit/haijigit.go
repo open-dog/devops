@@ -83,7 +83,7 @@ func GetBranchNameByName(name string) (g.List, error) {
 	}
 	fmt.Println(code_address)
 
-	cmd := "cd ./code/" + name + " && git branch -r"
+	cmd := "cd ./code/" + name + " && git remote update -p && git branch -r"
 	out, err := helper.Cmd(cmd, true)
 	if err != nil {
 		return branch_list, err
@@ -91,7 +91,7 @@ func GetBranchNameByName(name string) (g.List, error) {
 	list_arr := strings.Split(string(out), "\n")
 
 	for _, item := range list_arr {
-		if item != "" && !strings.Contains(item, "HEAD") {
+		if item != "" && !strings.Contains(item, "HEAD") && !strings.Contains(item, "正在") {
 			branch_list = append(branch_list, g.Map{"label": strings.TrimSpace(item), "value": strings.TrimSpace(item)})
 		}
 	}
