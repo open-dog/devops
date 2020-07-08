@@ -360,7 +360,7 @@ func (r *ReleaseService) Export(release_id string) (*releasestruct.OnlineInfo, e
 		if serName == "" || serBranch == "" {
 			continue
 		}
-		serBranch = strings.TrimLeft(serBranch, "origin/")
+		serBranch = strings.TrimLeft(strings.TrimLeft(serBranch, "origin"), "/")
 		online_s = append(online_s, &releasestruct.OnlineService{
 			ServiceName: serName,
 			Version:     version,
