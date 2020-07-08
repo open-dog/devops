@@ -24,7 +24,7 @@ func ExportRelease(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Header("Content-Disposition", "attachment; filename="+release_id+".json")
+	ctx.Header("Content-Disposition", "attachment; filename=online"+release_id+".json")
 	ctx.Header("Content-Type", ctx.GetHeader("Content-Type"))
 	io.Copy(ctx.Writer, bytes.NewReader(b_str))
 }

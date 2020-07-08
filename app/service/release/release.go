@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/util/gconv"
 	"go-admin/app/model/devops"
 	"go-admin/app/model/devops/releasestruct"
+	"strings"
 )
 
 //添加工单操作service
@@ -303,9 +304,14 @@ func (r *ReleaseService) Export(release_id string) (*releasestruct.OnlineInfo, e
 	package_list := pg.List()
 	p_list := []*releasestruct.OnlinePackage{}
 	for _, item := range package_list {
+		packName := gconv.String(item["name"])
+		packBranch := gconv.String(item["branch"])
+		if packName == "" || packBranch == "" {
+			continue
+		}
 		p_list = append(p_list, &releasestruct.OnlinePackage{
-			PackageName: gconv.String(item["name"]),
-			BranchName:  gconv.String(item["branch"]),
+			PackageName: packName,
+			BranchName:  packBranch,
 		})
 	}
 	resp.Package = p_list
@@ -343,10 +349,22 @@ func (r *ReleaseService) Export(release_id string) (*releasestruct.OnlineInfo, e
 				Remark: gconv.String(script_map["remark"]),
 			})
 		}
+		//对应的版本信息
+		version := gconv.String(item["version"])
+		if version == "" {
+			version = "v1"
+		}
+		//参数校验，与截取数据
+		serName := gconv.String(item["name"])
+		serBranch := gconv.String(item["branch"])
+		if serName == "" || serBranch == "" {
+			continue
+		}
+		serBranch = strings.TrimLeft(serBranch, "origin/")
 		online_s = append(online_s, &releasestruct.OnlineService{
-			ServiceName: gconv.String(item["name"]),
-			Version:     "v1",
-			BranchName:  gconv.String(item["branch"]),
+			ServiceName: serName,
+			Version:     version,
+			BranchName:  serBranch,
 			Env:         rsp_env,
 			Script:      rsp_script,
 		})
